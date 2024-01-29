@@ -1,0 +1,23 @@
+const mongoose = require('mongoose');
+const accountModel = new mongoose.Schema({
+    profileId:{
+        type:mongoose.Schema.Types.ObjectId, ref:'Profile'
+    },
+    userName:{
+        type:String,
+        require:true
+    },
+    password:{
+        type:String,
+        require:true
+    },
+    is_online:{
+        type:String,
+        require:true
+    },
+    is_active_status:{
+        type:Boolean
+    }
+},{timestamps:true})
+
+module.exports = mongoose.model('Account', accountModel)

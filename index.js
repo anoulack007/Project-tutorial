@@ -1,13 +1,13 @@
-const express = require('express')
+const http = require('http');
 const app = require('./src/routes/app')
 require('./src/database')
 
-app.use(express.json());
-app.use(express.urlencoded);
-const PORT = 4000;
+const server = http.createServer(app);
 
-app.use((request,next)=>{
-    console.log(`${request.method}:${request.url}`);
-    next();
+const{API_PORT}=process.env;
+const port = process.env.PORT || API_PORT
+
+
+server.listen(port,()=>{
+    console.log(`Server running on ${port}`);
 })
-app.listen(PORT,()=>console.log(`Running Server On Port ${PORT}!!`))

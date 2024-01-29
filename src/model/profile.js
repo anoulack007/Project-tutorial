@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const profileModel = new mongoose.Schema({
-    resIds:{
-        type:mongoose.Schema.Types.ObjectId, ref:''
+    resIds:[{
+        type:mongoose.Schema.Types.ObjectId, ref:'Responsibility'
         
-    },
+    }],
     poId:{
-        type:mongoose.SchemaType.Types.ObjectId, ref:''
+        type:mongoose.Schema.Types.ObjectId, ref:'Position'
     },
     roleld:{
-        type:mongoose.SchemaType.Types.ObjectId, ref:''
+        type:mongoose.Schema.Types.ObjectId, ref:'Role'
     },
     firstName:{
         type:String,
