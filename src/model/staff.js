@@ -16,11 +16,12 @@ const staffModel = new mongoose.Schema({
         require:true
     },
     is_online:{
-        type:String,
-        require:true
+        Type:Boolean,
+        default:true
     },
     is_active_status:{
-        Type:Boolean
+        Type:Boolean,
+        default:true
     }
 },{timestamps:true})
 

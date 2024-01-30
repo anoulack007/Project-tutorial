@@ -1,5 +1,6 @@
 const http = require('http');
 const app = require('./src/routes/app')
+
 require('./src/database')
 
 const server = http.createServer(app);

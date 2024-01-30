@@ -12,11 +12,12 @@ const accountModel = new mongoose.Schema({
         require:true
     },
     is_online:{
-        type:String,
-        require:true
+        type:Boolean,
+        default:true
     },
     is_active_status:{
-        type:Boolean
+        type:Boolean,
+        default:true
     }
 },{timestamps:true})
 
