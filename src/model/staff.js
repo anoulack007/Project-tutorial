@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const staffModel = new mongoose.Schema({
     profileId:{
         type:mongoose.Schema.Types.ObjectId, ref:'Profile'
@@ -16,13 +16,13 @@ const staffModel = new mongoose.Schema({
         require:true
     },
     is_online:{
-        Type:Boolean,
+        type:Boolean,
         default:true
     },
     is_active_status:{
-        Type:Boolean,
+        type:Boolean,
         default:true
     }
 },{timestamps:true})
 
-module.exports = mongoose.model('Staff',staffModel)
+module.exports = mongoose.model('Staff', staffModel)

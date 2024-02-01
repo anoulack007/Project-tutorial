@@ -23,9 +23,7 @@ const jwtValidate = async (request,response, next) =>{
     if(!request.headers["authorization"]) return response.sendStatus(401)
     const token = request.headers["authorization"].split("Bearer ")[1]
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-
     const user = await account.findOne({userName:decoded.userName})
-
     if(!user) return response.sendStatus(401)
 
     request.Use = decoded.userName

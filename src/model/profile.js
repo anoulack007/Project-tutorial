@@ -7,7 +7,7 @@ const profileModel = new mongoose.Schema({
     poId:{
         type:mongoose.Schema.Types.ObjectId, ref:'Position'
     },
-    roleld:{
+    roleId:{
         type:mongoose.Schema.Types.ObjectId, ref:'Role'
     },
     firstName:{
