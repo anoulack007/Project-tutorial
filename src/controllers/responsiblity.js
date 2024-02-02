@@ -4,6 +4,10 @@ const responsibility = require('../model/responsilbility')
 
 exports.CreateRespon = async(request,response) =>{
     const {resName} = request.body
+    const duct = await responsibility.findOne({ resName });
+    if (duct) {
+      return response.status(409).send("User Mee resName ny leo");
+    }
     const respon = await responsibility.create({resName})
     response.status(201).send(respon)
 }
@@ -23,7 +27,7 @@ exports.UpdateRespon = async(request,response)=>{
     if (duct) {
     return response.status(409).send("User Mee resName ny leo");}
     const respon = await responsibility.findByIdAndUpdate(id,{resName},{new:true})
-    response.send(202).send(respon);
+    response.status(202).send(respon);
 }
 exports.deleteRespon=async(request,response)=>{
     const{id}=request.params

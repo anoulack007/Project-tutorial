@@ -13,6 +13,10 @@ const storage = multer.diskStorage({
 
 exports.CreateProfile = async (request, response) => {
   const { firstName, surName, age, address, email, AccId } = request.body;
+  const duct = await profile.findOne({firstName});
+  if (duct) {
+    return response.status(409).send("User Mee firstName ny leo");
+  }
   const image = request.file.filename;
   const pro = await profile.create({
     firstName,

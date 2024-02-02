@@ -2,6 +2,10 @@ const position = require('../model/position')
 
 exports.CreatePosition = async(request,response) =>{
     const {poName} = request.body
+    const duct = await position.findOne({poName});
+    if (duct) {
+      return response.status(409).send("User Mee poName ny leo");
+  }
     const po = await position.create({poName})
     response.status(201).send(po)
 }
@@ -21,7 +25,7 @@ exports.UpdatePosition = async(request,response)=>{
     if (duct) {
     return response.status(409).send("User Mee poName ny leo");}
     const po = await position.findByIdAndUpdate(id,{poName},{new:true})
-    response.send(202).send(po);
+    response.status(202).send(po);
 }
 exports.deletePosition=async(request,response)=>{
     const{id}=request.params

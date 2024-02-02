@@ -23,18 +23,26 @@ exports.registerStaff = async (request,response)=>{
     response.status(201).send(emp)
 }
 exports.loginStaff = async (request,response)=>{
-    const{userName} = request.body
-    const emp = await staff.findOne({userName})
-    if(!emp){
-        return response.sendStatus(400)
+    const { userName, password } = request.body;
+    if (!userName || !password) return response.send(400).send("fail khuy");
+    const emp = await staff.findOne({ userName });
+    if (!emp) {
+      return response.sendStatus(401);
     }
-    const access_token = jwtGenerateStaff(emp)
-    const refresh_token = jwtRefreshTokenGenerateStaff(emp)
 
-    response.json({
+    const isValid = await bcrypt.compare(password, emp.password);
+    console.log(isValid)
+    const access_token = jwtGenerateStaff(emp);
+    const refresh_token = jwtRefreshTokenGenerateStaff(emp);
+    if (!isValid) {
+      console.log("Failed to Authenticate");
+      response.status(401).send("Failed");
+    } else {
+      response.json({
         access_token,
-        refresh_token
-    })
+        refresh_token,
+      });
+    }
 }
 exports.refreshStaff = async (request,response)=>{
     const emp = staff.findOne({userName:request.staff})
@@ -74,3 +82,20 @@ exports.deleteStaff = async (request, response) => {
     console.log(del);
     response.status(200).send(del);
   };
+
+exports.changePasswordStaff = async (request, response) => {
+    const { id } = request.params;
+    const { passOld, passNew } = request.body;
+    if (!passOld && !passNew) return response.sendStatus(400).send("failed khuy");
+    const userDB = await staff.findById(id);
+    console.log(userDB);
+    if (!userDB) return response.sendStatus(401)
+    const isValid = await bcrypt.compare(passOld, userDB.password);
+    if (!isValid) {
+      console.log("compare failed");
+      return response.send("200");
+    }
+    const password = await bcrypt.hash(passNew, 10);
+    await staff.findByIdAndUpdate(id, { password });
+    response.status(201).send('change password staff success');
+};
