@@ -50,18 +50,19 @@ exports.UpdateProfile = async (request, response) => {
     return response.status(409).send("User Mee firstName ny leo");
 }
   const searchPic = await profile.findById({ _id: id });
+  
   if (searchPic.image !== undefined) {
     const pic = request.file.filename;
-
     if (fs.existsSync("./src/image/" + searchPic.image)) {
       fs.unlink("./src/image/" + searchPic.image, (err) => {
         if (err) {
           console.log(err);
         } else {
-          console.log("Remove success");
+          console.log("Update success");
         }
       })}
-      const pro = await profile.findByIdAndUpdate(id,{ poId:poId,roleId:roleId,resIds:resIds,firstName, surName, age, address, email, image:pic },{ new: true });
+      // await profile.create({image:pic})
+      const pro = await profile.findByIdAndUpdate(id,{ poId:poId,roleId:roleId,resIds:resIds,firstName, surName, age, address, email,image:pic},{ new: true });
       response.status(202).send(pro);
   }
 

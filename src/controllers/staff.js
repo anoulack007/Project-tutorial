@@ -1,11 +1,12 @@
+const { jwtGenerate, jwtRefreshTokenGenerate } = require('../middleware/jwtAccount')
 const staff = require('../model/staff')
 const bcrypt = require('bcrypt')
-const {jwtGenerateStaff, jwtRefreshTokenGenerateStaff} =require('../middleware/jwtStaff')
+
 
 
 exports.registerStaff = async (request,response)=>{
-    console.log(request)
     const{create_by_name, userName,password}= request.body
+
     if (!(create_by_name && userName && password)) {
         response.status(400).send("All input is required");
       }
@@ -24,16 +25,15 @@ exports.registerStaff = async (request,response)=>{
 }
 exports.loginStaff = async (request,response)=>{
     const { userName, password } = request.body;
-    if (!userName || !password) return response.send(400).send("fail khuy");
+    if (!userName || !password) return response.send(400).send("fail");
     const emp = await staff.findOne({ userName });
     if (!emp) {
       return response.sendStatus(401);
     }
 
     const isValid = await bcrypt.compare(password, emp.password);
-    console.log(isValid)
-    const access_token = jwtGenerateStaff(emp);
-    const refresh_token = jwtRefreshTokenGenerateStaff(emp);
+    const access_token = jwtGenerate(emp);
+    const refresh_token = jwtRefreshTokenGenerate(emp);
     if (!isValid) {
       console.log("Failed to Authenticate");
       response.status(401).send("Failed");
@@ -46,9 +46,10 @@ exports.loginStaff = async (request,response)=>{
 }
 exports.refreshStaff = async (request,response)=>{
     const emp = staff.findOne({userName:request.staff})
+    console.log(request)
     if(!emp) return response.sendStatus(401)
-    const access_token = jwtGenerateStaff(emp)
-    const refresh_token = jwtRefreshTokenGenerateStaff(emp)
+    const access_token = jwtGenerate(emp)
+    const refresh_token = jwtRefreshTokenGenerate(emp)
     emp.refresh = refresh_token
     return response.json({
         access_token,
@@ -78,6 +79,7 @@ exports.UpdateStaff=async(request,response)=>{
 }
 exports.deleteStaff = async (request, response) => {
     const { id } = request.params;
+    console.log(id)
     const del = await staff.findByIdAndDelete(id);
     console.log(del);
     response.status(200).send(del);
@@ -86,7 +88,7 @@ exports.deleteStaff = async (request, response) => {
 exports.changePasswordStaff = async (request, response) => {
     const { id } = request.params;
     const { passOld, passNew } = request.body;
-    if (!passOld && !passNew) return response.sendStatus(400).send("failed khuy");
+    if (!passOld || !passNew) return response.sendStatus(400).send("failed");
     const userDB = await staff.findById(id);
     console.log(userDB);
     if (!userDB) return response.sendStatus(401)

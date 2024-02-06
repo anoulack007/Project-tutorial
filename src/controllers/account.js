@@ -2,6 +2,7 @@ const acc = require("../model/account");
 const bcrypt = require("bcrypt");
 const {
   jwtGenerate,
+  jwtValidate,
   jwtRefreshTokenGenerate,
 } = require("../middleware/jwtAccount");
 // const { response } = require('../routes/app')
@@ -27,13 +28,12 @@ exports.registerAcc = async (request, response) => {
 
 exports.loginAcc = async (request, response) => {
   const { userName, password } = request.body;
-  if (!userName || !password) return response.status(400).send("fail khuy");
+  if (!userName || !password) return response.status(400).send("fail ");
   const acc2 = await acc.findOne({ userName });
   if (!acc2) {
     return response.sendStatus(401);
   }
   const isValid = await bcrypt.compare(password, acc2.password);
-  console.log(isValid)
   const access_token = jwtGenerate(acc2);
   const refresh_token = jwtRefreshTokenGenerate(acc2);
   if (!isValid) {
@@ -48,7 +48,7 @@ exports.loginAcc = async (request, response) => {
 };
 
 exports.refreshAcc = async (request, response) => {
-  const account = acc.findOne({ userName: request.acc });
+  const account = await acc.findOne({ userName: request.acc });
 
   if (!account) return response.sendStatus(401);
   const access_token = jwtGenerate(account);
@@ -60,6 +60,7 @@ exports.refreshAcc = async (request, response) => {
   });
 };
 exports.ReadAcc = async (request, response) => {
+  console.log(request.userName)
   const account = await acc.find().populate("profileId");
   response.status(200).send(account);
 };
@@ -68,6 +69,7 @@ exports.ReadAcc1 = async (request, response) => {
   const account = await acc.findById(id).populate("profileId");
   response.status(200).send(account);
 };
+
 exports.UpdateAcc = async (request, response) => {
   const { id } = request.params;
   const { userName, is_online, is_active_status, profileId } = request.body;
@@ -83,25 +85,28 @@ exports.UpdateAcc = async (request, response) => {
   );
   response.status(202).send(account);
 };
+
+
 exports.deleteAccount = async (request, response) => {
   const { id } = request.params;
   const del = await acc.findByIdAndDelete(id);
-  console.log(del);
+
   response.status(200).send(del);
 };
 
 exports.changePasswordAccount = async (request, response) => {
   const { id } = request.params;
+
   const { passOld, passNew } = request.body;
-  if (!passOld && !passNew) return response.sendStatus(400).send("failed khuy");
+  if (!passOld || !passNew) return response.sendStatus(400).send("failed ");
   const userDB = await acc.findById(id);
-  console.log(userDB);
+
   if (!userDB) return response.sendStatus(401)
   const isValid = await bcrypt.compare(passOld, userDB.password);
   if (!isValid) {
-    console.log("compare failed");
-    return response.send("200");
+    return response.status(401).send("jjjhh");
   }
+  //
   const password = await bcrypt.hash(passNew, 10);
   await acc.findByIdAndUpdate(id, { password });
   response.status(201).send('change success');

@@ -32,5 +32,9 @@ exports.UpdateRespon = async(request,response)=>{
 exports.deleteRespon=async(request,response)=>{
     const{id}=request.params
     const del = await responsibility.findByIdAndDelete(id)
-    response.status(200).send(del)
+    if (!del) {
+        response.status(409).send("Delete Responsiblity Ny leo");
+      } else {
+        response.status(200).send(del);
+      }
 }

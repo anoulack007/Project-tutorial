@@ -9,10 +9,14 @@ exports.CreatePosition = async(request,response) =>{
     const po = await position.create({poName})
     response.status(201).send(po)
 }
+
+
 exports.ReadManyPo = async(request,response)=>{
     const readPo = await position.find()
     response.status(200).send(readPo)
 }
+
+
 exports.ReadPo = async(request,response)=>{
     const {id} =request.params
     const show = await position.findById(id)
@@ -30,5 +34,9 @@ exports.UpdatePosition = async(request,response)=>{
 exports.deletePosition=async(request,response)=>{
     const{id}=request.params
     const del = await position.findByIdAndDelete(id)
-    response.status(200).send(del)
+    if (!del) {
+        response.status(409).send("Delete Position Ny leo");
+      } else {
+        response.status(200).send(del);
+      }
 }
